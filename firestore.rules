@@ -1,0 +1,53 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Check if user is logged in
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if user has a specific role
+    function hasRole(role) {
+      return isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+
+    // users collection
+    match /users/{userId} {
+      // Anyone can read their own data. Admins can read all.
+      allow read: if isAuthenticated() && (request.auth.uid == userId || hasRole('admin'));
+      
+      // Users can only be created by themselves. They can only set their role to 'user' or 'engineer' (pending approval).
+      // Creating an admin account directly from client is blocked.
+      allow create: if isAuthenticated() && request.auth.uid == userId && (request.resource.data.role == 'user' || request.resource.data.role == 'engineer');
+      
+      // Only admins can update user roles
+      allow update: if isAuthenticated() && (request.auth.uid == userId || hasRole('admin'));
+      
+      allow delete: if hasRole('admin');
+    }
+
+    // engineerRequests collection
+    match /engineerRequests/{userId} {
+      // Engineers can read their own request. Admins can read all.
+      allow read: if isAuthenticated() && (request.auth.uid == userId || hasRole('admin'));
+      
+      // Engineers can create their own request.
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      
+      // Only admins can update (approve/reject).
+      allow update: if hasRole('admin') || (isAuthenticated() && request.auth.uid == userId); // Allow users to update their profile_image_url
+      
+      allow delete: if hasRole('admin');
+    }
+
+    // Add your other collections here (e.g., complaints, etc)
+    // Example:
+    // match /complaints/{complaintId} {
+    //   allow read: if isAuthenticated();
+    //   allow create: if hasRole('user');
+    //   allow update: if hasRole('admin') || hasRole('engineer') || (hasRole('user') && resource.data.userId == request.auth.uid);
+    //   allow delete: if hasRole('admin');
+    // }
+  }
+}

@@ -1,0 +1,14 @@
+project_id = "ygbmkjnqyfjsgyacoqxt"
+
+[functions]
+  [functions.auth-email-hook]
+    verify_jwt = false
+
+  [functions.verify-otp]
+    verify_jwt = false
+
+  [functions.send-resolution-email]
+    verify_jwt = false
+
+  [functions.detect-duplicates]
+    verify_jwt = false

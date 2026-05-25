@@ -1,0 +1,491 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Noto+Sans+Gujarati:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Aapno Rasto - Gujarat Government Portal Design System */
+/* Colors: Navy Blue (#002147), Saffron (#FF9933), White */
+/* Indian Flag Status: Saffron, White, Green */
+
+@layer base {
+  :root {
+    /* Warm Off-White Theme — subtle so sections & cards are visible */
+    --background: 30 20% 97%;
+    --foreground: 0 0% 8%;
+
+    /* Cards & Surfaces — slightly whiter than bg so they lift */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 8%;
+
+    /* Primary - Navy Blue */
+    --primary: 216 100% 14%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary */
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 8%;
+
+    /* Saffron Accent */
+    --accent: 30 100% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Muted */
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    /* Destructive */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders & Inputs */
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 30 100% 60%;
+
+    --radius: 0.75rem;
+
+    /* Indian Flag Status Colors */
+    --status-pending: 0 84% 60%;
+    --status-progress: 45 100% 50%;
+    --status-completed: 145 63% 42%;
+
+    /* Government Specific */
+    --govt-navy: 216 100% 14%;
+    --govt-saffron: 30 100% 60%;
+    --govt-white: 0 0% 100%;
+    --govt-green: 145 63% 42%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(216 100% 14%) 0%, hsl(216 80% 25%) 100%);
+    --gradient-saffron: linear-gradient(135deg, hsl(30 100% 60%) 0%, hsl(25 100% 50%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(216 100% 14%) 0%, hsl(216 80% 20%) 50%, hsl(216 60% 30%) 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.04);
+    --shadow-md: 0 4px 12px -1px hsl(0 0% 0% / 0.06), 0 2px 4px -2px hsl(0 0% 0% / 0.04);
+    --shadow-lg: 0 12px 24px -4px hsl(0 0% 0% / 0.08), 0 4px 8px -4px hsl(0 0% 0% / 0.04);
+    --shadow-glow: 0 0 30px hsl(30 100% 60% / 0.2);
+
+    /* Sidebar */
+    --sidebar-background: 216 100% 14%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 30 100% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 216 80% 20%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 216 60% 25%;
+    --sidebar-ring: 30 100% 60%;
+  }
+
+  .dark {
+    /* Pure Black Theme */
+    --background: 0 0% 0%;
+    --foreground: 0 0% 95%;
+
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 30 100% 60%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 95%;
+
+    --accent: 30 100% 60%;
+    --accent-foreground: 0 0% 0%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 60%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
+    --ring: 30 100% 60%;
+
+    --sidebar-background: 0 0% 4%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 30 100% 60%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 12%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 16%;
+    --sidebar-ring: 30 100% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .font-gujarati {
+    font-family: 'Noto Sans Gujarati', 'Poppins', sans-serif;
+  }
+}
+
+@layer components {
+  /* Government Header */
+  .govt-header {
+    @apply bg-primary text-primary-foreground;
+    background: var(--gradient-primary);
+  }
+
+  /* Status Bar - Indian Flag Colors */
+  .status-bar {
+    @apply flex items-center gap-1 h-1.5 rounded-full overflow-hidden;
+  }
+
+  .status-saffron {
+    @apply bg-[hsl(30,100%,60%)] h-full;
+  }
+
+  .status-white {
+    @apply bg-white h-full;
+  }
+
+  .status-green {
+    @apply bg-[hsl(145,63%,42%)] h-full;
+  }
+
+  /* Cards - Modern Clean */
+  .govt-card {
+    @apply bg-card rounded-2xl border border-border transition-all duration-300;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .govt-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  /* Buttons */
+  .btn-saffron {
+    @apply bg-accent text-accent-foreground font-semibold px-6 py-3 rounded-lg transition-all duration-300;
+    background: var(--gradient-saffron);
+  }
+
+  .btn-saffron:hover {
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-1px);
+  }
+
+  .btn-navy {
+    @apply bg-primary text-primary-foreground font-semibold px-6 py-3 rounded-lg transition-all duration-300;
+    background: var(--gradient-primary);
+  }
+
+  .btn-navy:hover {
+    @apply opacity-90;
+    transform: translateY(-1px);
+  }
+
+  /* Hero Section */
+  .hero-gradient {
+    background: var(--gradient-hero);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at 50% 0%, hsl(30 100% 60% / 0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Dashboard Stats */
+  .stat-card {
+    @apply govt-card p-6 relative overflow-hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, hsl(30 100% 60% / 0.1) 0%, transparent 70%);
+    transform: translate(30%, -30%);
+  }
+
+  /* Map Container */
+  .map-container {
+    @apply rounded-xl overflow-hidden border-2 border-border;
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Heatmap Popup Animation */
+  .heatmap-popup .leaflet-popup-content-wrapper {
+    border-radius: 10px;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    animation: heatmapPopupEntry 0.3s ease-out;
+  }
+
+  .heatmap-popup .leaflet-popup-content {
+    margin: 0;
+  }
+
+  .heatmap-popup .leaflet-popup-tip {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+
+  .animated-popup .leaflet-popup-content-wrapper {
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    animation: heatmapPopupEntry 0.25s ease-out;
+  }
+
+  @keyframes heatmapPopupEntry {
+    0% {
+      transform: scale(0.85);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(1.03);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .heatmap-circle {
+    transition: fill-opacity 0.3s ease;
+  }
+
+  /* Leaflet Custom Styles */
+  .leaflet-container {
+    @apply rounded-xl;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* Form Inputs */
+  .govt-input {
+    @apply bg-card border-2 border-border rounded-lg px-4 py-3 transition-all duration-200;
+  }
+
+  .govt-input:focus {
+    @apply border-accent outline-none ring-2 ring-accent/20;
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 20px hsl(30 100% 60% / 0.4);
+    }
+    50% {
+      box-shadow: 0 0 40px hsl(30 100% 60% / 0.6);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  /* Status Pills */
+  .status-pending {
+    @apply bg-destructive text-destructive-foreground;
+  }
+
+  .status-in-progress {
+    @apply bg-[hsl(45,100%,50%)] text-[hsl(216,100%,14%)];
+  }
+
+  .status-completed {
+    @apply bg-[hsl(145,63%,42%)] text-white;
+  }
+
+  /* Mobile App Feel */
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-card border-t border-border;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Dashboard Sidebar */
+  .dashboard-sidebar {
+    background: var(--gradient-primary);
+  }
+
+  /* Emblem Glow */
+  .emblem-glow {
+    filter: drop-shadow(0 0 10px hsl(30 100% 60% / 0.3));
+  }
+
+  /* Branded Navy Section - always navy regardless of theme */
+  .govt-branded {
+    background: hsl(216 100% 14%);
+    color: hsl(0 0% 100%);
+  }
+
+  .govt-branded-gradient {
+    background: var(--gradient-primary);
+    color: hsl(0 0% 100%);
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-muted rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-border rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SMOOTH SCROLL & GPU COMPOSITING
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Forces element onto its own GPU layer — no layout recalc during animation */
+.gpu-layer {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LANDING PAGE — CSS ANIMATIONS (runs on compositor thread, not JS)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Glowing Orbs ─────────────────────────────────────────────────────────── */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+.orb-blue {
+  width: 70vw;
+  height: 70vw;
+  top: -20%;
+  left: -10%;
+  background: hsl(220 80% 50% / 0.18);
+  animation: orbPulse 12s ease-in-out infinite alternate;
+}
+
+.orb-orange {
+  width: 60vw;
+  height: 60vw;
+  bottom: -20%;
+  right: -10%;
+  background: hsl(30 100% 55% / 0.15);
+  animation: orbPulse 16s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes orbPulse {
+  0%   { transform: scale(1)   translateZ(0); opacity: 0.6; }
+  50%  { transform: scale(1.2) translateZ(0); opacity: 0.9; }
+  100% { transform: scale(0.95) translateZ(0); opacity: 0.5; }
+}
+
+/* Floating Particles ───────────────────────────────────────────────────── */
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: hsl(0 0% 100% / 0.25);
+  will-change: transform, opacity;
+  animation: particleFloat linear infinite;
+}
+
+/* Spread 12 particles across the canvas with varying positions/delays */
+.particle-0  { left:  8%; top: 80%; animation-duration: 8s;  animation-delay: 0s;    }
+.particle-1  { left: 18%; top: 60%; animation-duration: 11s; animation-delay: -3s;   }
+.particle-2  { left: 30%; top: 75%; animation-duration: 9s;  animation-delay: -1.5s; }
+.particle-3  { left: 42%; top: 90%; animation-duration: 13s; animation-delay: -5s;   }
+.particle-4  { left: 55%; top: 70%; animation-duration: 7s;  animation-delay: -2s;   }
+.particle-5  { left: 65%; top: 85%; animation-duration: 10s; animation-delay: -4s;   }
+.particle-6  { left: 75%; top: 65%; animation-duration: 12s; animation-delay: -0.5s; }
+.particle-7  { left: 85%; top: 78%; animation-duration: 9s;  animation-delay: -6s;   }
+.particle-8  { left: 22%; top: 50%; animation-duration: 14s; animation-delay: -2.5s; }
+.particle-9  { left: 48%; top: 55%; animation-duration: 8s;  animation-delay: -1s;   }
+.particle-10 { left: 70%; top: 50%; animation-duration: 11s; animation-delay: -3.5s; }
+.particle-11 { left: 92%; top: 72%; animation-duration: 10s; animation-delay: -7s;   }
+
+@keyframes particleFloat {
+  0%   { transform: translateY(0)   translateX(0)   scale(0)   translateZ(0); opacity: 0; }
+  20%  { opacity: 0.85; }
+  80%  { opacity: 0.6; }
+  100% { transform: translateY(-120px) translateX(20px) scale(1.4) translateZ(0); opacity: 0; }
+}
+
+/* Bounce scroll indicator ─────────────────────────────────────────────── */
+.bounce-arrow {
+  animation: bounceY 2s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes bounceY {
+  0%, 100% { transform: translateY(0)    translateZ(0); }
+  50%       { transform: translateY(10px) translateZ(0); }
+}
+
+/* Step timeline glow ──────────────────────────────────────────────────── */
+.step-line-glow {
+  width: 100%;
+  height: 33%;
+  background: linear-gradient(to bottom, transparent, hsl(var(--primary)), transparent);
+  animation: lineGlow 3s linear infinite;
+  will-change: transform;
+}
+
+@keyframes lineGlow {
+  0%   { transform: translateY(-100%) translateZ(0); }
+  100% { transform: translateY(400%)  translateZ(0); }
+}
+

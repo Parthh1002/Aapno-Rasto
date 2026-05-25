@@ -1,0 +1,24 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Check if user is logged in
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if user has a specific role (requires custom claims if doing it this way, or just restricting based on paths)
+    // For Storage, it's safer to restrict by uid
+    
+    match /engineer_proofs/{userId}/{fileName} {
+      // Only the user themselves can upload
+      allow write: if isAuthenticated() && request.auth.uid == userId;
+      // The user or an admin can read
+      // Since we don't have firestore roles easily accessible here without custom claims, 
+      // allowing read if authenticated is a simple fallback, but you might want to tighten this.
+      allow read: if isAuthenticated();
+    }
+    
+    // Add other storage rules here
+  }
+}

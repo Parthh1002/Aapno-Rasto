@@ -1,0 +1,19 @@
+{
+  "name": "Aapno Rasto - Government of Gujarat",
+  "short_name": "Aapno Rasto",
+  "description": "Your Voice, Our Action. Civic Complaint Management Platform.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#002147",
+  "theme_color": "#002147",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["government", "utilities"]
+}
