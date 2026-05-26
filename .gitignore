@@ -21,4 +21,9 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+*.sw?node_modules
+.env
+dist
+build
+__pycache__
+*.pyc
