@@ -26,7 +26,8 @@ import {
   ImageOff,
   Link2,
   Check,
-  X
+  X,
+  Menu
 } from 'lucide-react';
 import { db } from '@/lib/firebaseConfig';
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, query, where } from 'firebase/firestore';
@@ -48,6 +49,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { formatDistanceToNow } from 'date-fns';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -132,6 +134,7 @@ export default function AdminDashboard() {
   const [showHeatmap, setShowHeatmap] = useState(true);
   const [roleView, setRoleView] = useState<'admin' | 'engineer'>('admin');
   const [pendingAssignEngineerId, setPendingAssignEngineerId] = useState<string>('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const pendingReviewsCount = pendingReviews.length;
 
@@ -321,8 +324,8 @@ export default function AdminDashboard() {
     }
   };
 
-  const renderSidebar = () => (
-    <div className="hidden lg:flex flex-col w-64 bg-sidebar text-sidebar-foreground min-h-screen">
+  const renderSidebarContent = () => (
+    <>
       {/* Logo */}
       <div className="p-6 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
@@ -372,7 +375,10 @@ export default function AdminDashboard() {
               key={item.id}
               onClick={() => {
                 if (item.id === 'settings') navigate('/settings');
-                else setActiveTab(item.id as SidebarTab);
+                else {
+                  setActiveTab(item.id as SidebarTab);
+                  setIsMobileMenuOpen(false);
+                }
               }}
               className={cn(
                 "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
@@ -417,6 +423,12 @@ export default function AdminDashboard() {
           Logout
         </Button>
       </div>
+    </>
+  );
+
+  const renderSidebar = () => (
+    <div className="hidden lg:flex flex-col w-64 bg-sidebar text-sidebar-foreground min-h-screen fixed top-0 left-0 bottom-0 z-50">
+      {renderSidebarContent()}
     </div>
   );
 
@@ -430,9 +442,9 @@ export default function AdminDashboard() {
     }
 
     return (
-    <div className="space-y-6">
+    <div className="space-y-6 lg:pl-64">
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {[
           { label: 'Total', value: stats.total, icon: FileText, color: 'text-foreground' },
           { label: 'Pending', value: stats.pending, icon: Clock, color: 'text-govt-saffron' },
@@ -468,7 +480,7 @@ export default function AdminDashboard() {
       <DashboardAnalytics complaints={complaints} />
 
       {/* Map and Recent */}
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="govt-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg flex items-center justify-between">
@@ -510,10 +522,10 @@ export default function AdminDashboard() {
   };
 
   const renderComplaints = () => (
-    <div className="space-y-4">
+    <div className="space-y-4 lg:pl-64">
       {/* Filters */}
-      <div className="flex flex-wrap gap-4">
-        <div className="relative flex-1 min-w-[200px]">
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Search by ID or description..."
@@ -604,8 +616,9 @@ export default function AdminDashboard() {
   );
 
   const renderMap = () => (
-    <Card className="govt-card h-[calc(100vh-200px)]">
-      <CardHeader className="pb-2">
+    <div className="lg:pl-64 h-[calc(100vh-100px)]">
+      <Card className="govt-card h-full">
+        <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle>{t('liveMap')}</CardTitle>
           <Button 
@@ -628,12 +641,14 @@ export default function AdminDashboard() {
         />
       </CardContent>
     </Card>
+    </div>
   );
 
   const renderDuplicates = () => {
     return (
-      <DuplicatesManager 
-        complaints={complaints}
+      <div className="lg:pl-64">
+        <DuplicatesManager 
+          complaints={complaints}
         onMerge={async (masterId, duplicateIds) => {
           // Placeholder for real backend logic
           toast({
@@ -652,6 +667,7 @@ export default function AdminDashboard() {
           setShowComplaintDetail(true);
         }}
       />
+      </div>
     );
   };
 
@@ -660,10 +676,10 @@ export default function AdminDashboard() {
       case 'dashboard': return renderDashboard();
       case 'complaints': return renderComplaints();
       case 'duplicates': return renderDuplicates();
-      case 'reviews': return <EngineerUpdateReview />;
+      case 'reviews': return <div className="lg:pl-64"><EngineerUpdateReview /></div>;
       case 'map': return renderMap();
       case 'engineers': return (
-        <div className="space-y-6">
+        <div className="space-y-6 lg:pl-64">
           <Card className="govt-card">
             <CardHeader>
               <CardTitle>Pending Engineer Requests</CardTitle>
@@ -796,14 +812,16 @@ export default function AdminDashboard() {
         </div>
       );
       case 'settings': return (
-        <Card className="govt-card">
-          <CardHeader>
+        <div className="lg:pl-64">
+          <Card className="govt-card">
+            <CardHeader>
             <CardTitle>Settings</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">Settings panel coming soon...</p>
           </CardContent>
         </Card>
+        </div>
       );
       default: return null;
     }
@@ -813,14 +831,91 @@ export default function AdminDashboard() {
     <div className="flex min-h-screen bg-background">
       {renderSidebar()}
 
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col min-h-screen">
         {/* Mobile Header */}
-        <div className="lg:hidden">
-          <GovtHeader variant="compact" />
+        <div className="lg:hidden sticky top-0 z-40 bg-background border-b border-border shadow-sm">
+          <div className="flex items-center justify-between p-4">
+            <div className="flex items-center gap-3">
+              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon" className="shrink-0">
+                    <Menu className="w-5 h-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="p-0 w-72 bg-sidebar border-r-0">
+                  <SheetHeader className="sr-only">
+                    <SheetTitle>Navigation Menu</SheetTitle>
+                  </SheetHeader>
+                  <div className="flex flex-col h-full overflow-y-auto">
+                    {renderSidebarContent()}
+                  </div>
+                </SheetContent>
+              </Sheet>
+              <h1 className="text-xl font-bold capitalize truncate max-w-[150px] md:max-w-[300px]">
+                {activeTab === 'dashboard' ? t('appName') : activeTab}
+              </h1>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon" className="relative hover:bg-muted">
+                    <Bell className="w-5 h-5 text-foreground" />
+                    {pendingReviews.length > 0 && (
+                      <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-destructive border-2 border-background animate-pulse" />
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 p-0 mr-2 mt-2" align="end">
+                  <div className="p-4 border-b border-border/50">
+                    <h3 className="font-semibold flex items-center justify-between">
+                      Notifications
+                      {pendingReviews.length > 0 && (
+                        <Badge variant="destructive" className="ml-2">{pendingReviews.length} New</Badge>
+                      )}
+                    </h3>
+                  </div>
+                  <ScrollArea className="h-[300px]">
+                    {pendingReviews.length > 0 ? (
+                      <div className="flex flex-col">
+                        {pendingReviews.map((update: any) => (
+                          <div 
+                            key={update.id} 
+                            className="p-4 border-b border-border/50 hover:bg-muted/50 cursor-pointer transition-colors"
+                            onClick={() => {
+                              setActiveTab('reviews');
+                              setIsMobileMenuOpen(false);
+                            }}
+                          >
+                            <div className="flex justify-between items-start mb-1">
+                              <span className="font-medium text-sm text-foreground">
+                                Update from Engineer
+                              </span>
+                              <span className="text-[10px] text-muted-foreground">
+                                {formatDistanceToNow(new Date(update.created_at), { addSuffix: true })}
+                              </span>
+                            </div>
+                            <p className="text-xs text-muted-foreground line-clamp-2">
+                              {update.message || `Photo uploaded for complaint ${update.work_order?.complaint?.category}`}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="p-8 text-center flex flex-col items-center justify-center text-muted-foreground">
+                        <CheckCircle className="w-8 h-8 mb-2 text-govt-green opacity-50" />
+                        <p className="text-sm">You're all caught up!</p>
+                      </div>
+                    )}
+                  </ScrollArea>
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
         </div>
 
         {/* Desktop Header */}
-        <header className="hidden lg:flex items-center justify-between p-6 border-b border-border">
+        <header className="hidden lg:flex items-center justify-between p-6 border-b border-border pl-72">
           <div>
             <h1 className="text-2xl font-bold capitalize">{activeTab}</h1>
             <p className="text-sm text-muted-foreground">
@@ -882,7 +977,7 @@ export default function AdminDashboard() {
         </header>
 
         {/* Main Content */}
-        <main className="p-4 lg:p-6">
+        <main className="p-4 md:p-6 flex-1 overflow-x-hidden">
           {renderContent()}
         </main>
       </div>
