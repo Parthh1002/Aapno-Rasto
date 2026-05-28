@@ -218,7 +218,7 @@ export function LiveCameraCapture({ onCapture, onCancel, inline = false }: LiveC
     return (
       <div className="space-y-4">
         {/* Main Camera Viewport */}
-        <div className="relative rounded-2xl overflow-hidden bg-black aspect-[4/3] shadow-inner group">
+        <div className="relative rounded-2xl overflow-hidden bg-black aspect-video shadow-inner group">
           {isLoading && (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-muted">
               <RefreshCw className="w-8 h-8 text-primary animate-spin mb-2" />
@@ -249,10 +249,10 @@ export function LiveCameraCapture({ onCapture, onCancel, inline = false }: LiveC
                     className={cn("w-full h-full object-cover", (!cameraReady || isLoading) ? "hidden" : "block")}
                   />
                   
-                  {/* Square Reticle Overlay */}
+                  {/* Reticle Overlay */}
                   {!isLoading && cameraReady && (
                     <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                      <div className="w-[70%] h-[70%] border border-white/30 rounded-lg shadow-[0_0_0_9999px_rgba(0,0,0,0.4)] relative">
+                      <div className="w-[85%] h-[85%] border border-white/30 rounded-lg shadow-[0_0_0_9999px_rgba(0,0,0,0.5)] relative">
                         {/* Corner Accents */}
                         <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-accent rounded-tl-lg" />
                         <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-accent rounded-tr-lg" />
