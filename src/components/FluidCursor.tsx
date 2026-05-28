@@ -59,21 +59,21 @@ export const FluidCursor = () => {
   }, []);
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden w-full h-full opacity-60 dark:opacity-40">
+    <div className="pointer-events-none fixed inset-0 z-40 overflow-hidden w-full h-full opacity-100 mix-blend-multiply dark:mix-blend-screen dark:opacity-70 transition-opacity duration-500">
       {/* Saffron Blob */}
       <div
         ref={blob1Ref}
-        className="absolute top-[-200px] left-[-200px] w-[400px] h-[400px] rounded-full bg-[hsl(30,100%,60%)] opacity-40 blur-[100px] will-change-transform dark:bg-[hsl(30,100%,50%)]"
+        className="absolute top-[-200px] left-[-200px] w-[400px] h-[400px] rounded-full bg-[hsl(30,100%,50%)] opacity-60 blur-[100px] will-change-transform dark:bg-[hsl(30,100%,40%)]"
       />
       {/* Navy Blue Blob */}
       <div
         ref={blob2Ref}
-        className="absolute top-[-250px] left-[-250px] w-[500px] h-[500px] rounded-full bg-[hsl(216,100%,40%)] opacity-40 blur-[120px] will-change-transform dark:bg-[hsl(216,80%,50%)]"
+        className="absolute top-[-250px] left-[-250px] w-[500px] h-[500px] rounded-full bg-[hsl(216,100%,30%)] opacity-60 blur-[120px] will-change-transform dark:bg-[hsl(216,80%,40%)]"
       />
       {/* Green Blob */}
       <div
         ref={blob3Ref}
-        className="absolute top-[-150px] left-[-150px] w-[300px] h-[300px] rounded-full bg-[hsl(145,63%,42%)] opacity-30 blur-[80px] will-change-transform dark:bg-[hsl(145,80%,40%)]"
+        className="absolute top-[-150px] left-[-150px] w-[300px] h-[300px] rounded-full bg-[hsl(145,80%,30%)] opacity-50 blur-[80px] will-change-transform dark:bg-[hsl(145,80%,35%)]"
       />
     </div>
   );
