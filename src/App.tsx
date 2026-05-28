@@ -13,6 +13,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import EngineerDashboard from "./pages/EngineerDashboard";
 import StatisticsPage from "./pages/StatisticsPage";
 import NotFound from "./pages/NotFound";
+import { FluidCursor } from "./components/FluidCursor";
 
 const queryClient = new QueryClient();
 
@@ -130,6 +131,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <FluidCursor />
               <AppRoutes />
             </BrowserRouter>
           </TooltipProvider>
