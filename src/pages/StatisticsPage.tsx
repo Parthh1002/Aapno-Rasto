@@ -73,9 +73,6 @@ export default function StatisticsPage() {
     <div className="min-h-screen bg-background">
       <GovtHeader variant="compact" />
 
-      <div className="fixed top-4 right-4 z-50">
-        <ThemeToggle />
-      </div>
 
       <main className="container mx-auto px-4 py-6 max-w-7xl space-y-8">
         {/* Header */}

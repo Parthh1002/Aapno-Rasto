@@ -265,10 +265,6 @@ export default function EngineerDashboard() {
     <div className="min-h-screen bg-background pb-20 md:pb-0">
       <GovtHeader variant="compact" />
       
-      {/* Theme Toggle */}
-      <div className="fixed top-4 right-4 z-50">
-        <ThemeToggle />
-      </div>
 
       <div className="container mx-auto px-4 md:px-8 py-6 max-w-7xl flex flex-col md:flex-row gap-8">
         
