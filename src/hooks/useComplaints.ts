@@ -49,11 +49,11 @@ export function useMyComplaints() {
       
       const q = query(
         collection(db, 'complaints'),
-        where('user_id', '==', user.id),
-        orderBy('created_at', 'desc')
+        where('user_id', '==', user.id)
       );
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Complaint));
+      const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Complaint));
+      return docs.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     },
     enabled: !!user?.id,
   });
@@ -70,11 +70,11 @@ export function useAssignedComplaints() {
       
       const q = query(
         collection(db, 'complaints'),
-        where('assigned_to', '==', user.id),
-        orderBy('created_at', 'desc')
+        where('assigned_to', '==', user.id)
       );
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Complaint));
+      const docs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Complaint));
+      return docs.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     },
     enabled: !!user?.id,
   });

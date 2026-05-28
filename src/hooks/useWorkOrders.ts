@@ -98,12 +98,12 @@ export function useEngineerWorkOrders() {
 
       const q = query(
         collection(db, 'work_orders'),
-        where('engineer_id', '==', user.id),
-        orderBy('created_at', 'desc')
+        where('engineer_id', '==', user.id)
       );
 
       const snapshot = await getDocs(q);
       const orders = snapshot.docs.map(d => transformWorkOrder(d.data(), d.id));
+      orders.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       
       // Fetch associated complaints
       for (const order of orders) {
