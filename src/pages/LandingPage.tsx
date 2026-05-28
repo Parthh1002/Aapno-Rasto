@@ -37,7 +37,7 @@ const STATS: StatData[] = [
 ];
 
 const STEPS: StepData[] = [
-  { step: 1, title: 'Register & Verify', description: 'Sign up with Gmail and verify via OTP',                       icon: Users },
+  { step: 1, title: 'Register & Verify', description: 'Sign up with Gmail and verify via link',                       icon: Users },
   { step: 2, title: 'Report Issue',      description: 'Capture photo with live camera and submit complaint',           icon: Camera },
   { step: 3, title: 'Track Progress',    description: 'Monitor status from Pending → In Progress → Completed',        icon: Clock },
   { step: 4, title: 'Earn Rewards',      description: 'Get 10 points when your complaint is resolved',                icon: Gift },
