@@ -302,6 +302,7 @@ export function FieldUpdateModal({ workOrder, open, onOpenChange, onComplete }: 
             <DialogTitle>Capture Photo</DialogTitle>
           </DialogHeader>
           <LiveCameraCapture
+            inline
             onCapture={handleCapture}
             onCancel={() => setShowCamera(false)}
           />
