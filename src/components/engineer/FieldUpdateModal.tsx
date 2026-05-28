@@ -313,7 +313,7 @@ export function FieldUpdateModal({ workOrder, open, onOpenChange, onComplete }: 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MessageSquare className="w-5 h-5" />
@@ -578,13 +578,7 @@ export function FieldUpdateModal({ workOrder, open, onOpenChange, onComplete }: 
             </Alert>
           )}
 
-          {/* Pending Approval Notice */}
-          <Alert>
-            <Clock className="w-4 h-4" />
-            <AlertDescription>
-              Updates with GPS-verified proof are submitted for admin review before becoming visible to citizens.
-            </AlertDescription>
-          </Alert>
+
 
           {/* Actions */}
           <div className="flex gap-3">

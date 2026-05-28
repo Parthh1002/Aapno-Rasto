@@ -78,13 +78,34 @@ export function useSubmitEngineerUpdate() {
         gps_distance_meters: data.gps_distance_meters || null,
         gps_verified: data.gps_distance_meters ? data.gps_distance_meters <= 500 : false,
         proof_stage: data.proof_stage,
-        approval_status: 'pending',
+        approval_status: 'approved' as const, // AUTO-APPROVE
+        reviewed_at: new Date().toISOString(),
+        reviewed_by: 'system_auto_approve',
         created_at: new Date().toISOString(),
       };
 
       const docRef = await addDoc(collection(db, 'work_order_updates'), updateData);
 
-      if (data.status !== 'completed') {
+      if (data.status === 'completed' || data.proof_stage === 'after') {
+        // Complete the work order
+        await updateDoc(doc(db, 'work_orders', data.work_order_id), {
+          status: 'completed',
+          actual_completion_date: new Date().toISOString(),
+        });
+
+        // Complete the complaint and award points instantly
+        const woSnap = await getDoc(doc(db, 'work_orders', data.work_order_id));
+        if (woSnap.exists()) {
+          const compId = woSnap.data().complaint_id;
+          if (compId) {
+            await updateDoc(doc(db, 'complaints', compId), {
+              status: 'completed',
+              resolved_at: new Date().toISOString(),
+              points_awarded: 10,
+            });
+          }
+        }
+      } else {
         const newStatus = data.status === 'blocked' ? 'blocked' : 'in_progress';
         await updateDoc(doc(db, 'work_orders', data.work_order_id), { status: newStatus });
       }

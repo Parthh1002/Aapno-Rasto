@@ -18,8 +18,8 @@ export async function getSignedUrl(urlOrPath: string): Promise<string> {
   if (!urlOrPath) return urlOrPath;
   if (!storage) return urlOrPath;
   
-  // If it's already a full HTTP URL, return as is
-  if (urlOrPath.startsWith('http')) return urlOrPath;
+  // If it's already a full HTTP URL or data URL, return as is
+  if (urlOrPath.startsWith('http') || urlOrPath.startsWith('data:')) return urlOrPath;
   
   try {
     const storageRef = ref(storage, urlOrPath);
@@ -47,9 +47,30 @@ export async function uploadToStorage(
   filePath: string,
   contentType = 'image/jpeg'
 ): Promise<string> {
-  if (!storage) throw new Error("Firebase storage is not configured");
-  const storageRef = ref(storage, filePath);
-  await uploadBytes(storageRef, file, { contentType });
-  // Firebase allows returning the path and later fetching it using getDownloadURL
-  return filePath;
+  const getBase64 = () => new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+
+  if (!storage) {
+    console.warn("Firebase storage is not configured. Falling back to data URL.");
+    return getBase64();
+  }
+  
+  try {
+    const storageRef = ref(storage, filePath);
+    // Add a timeout to prevent hanging if Firebase is misconfigured
+    const uploadPromise = uploadBytes(storageRef, file, { contentType });
+    const timeoutPromise = new Promise<never>((_, reject) => 
+      setTimeout(() => reject(new Error("Upload timeout")), 8000)
+    );
+    
+    await Promise.race([uploadPromise, timeoutPromise]);
+    return filePath;
+  } catch (error) {
+    console.warn("Upload failed or timed out, falling back to data URL:", error);
+    return getBase64();
+  }
 }
