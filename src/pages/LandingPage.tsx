@@ -9,6 +9,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { GovtHeader } from '@/components/GovtHeader';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 import campusImg1 from '@/assets/ldrp-campus-1.jpg';
@@ -609,31 +611,78 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════════════════ FOOTER ═══════════════════════════════════ */}
-      <footer className="bg-card border-t border-border py-12 px-4 relative z-20">
-        <div className="container mx-auto max-w-7xl">
+      <footer className="bg-card border-t border-border py-12 px-4 relative z-20 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none" />
+        <div className="container mx-auto max-w-7xl relative z-10">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-            <div className="flex items-center gap-4">
-              <div className="bg-white p-2 rounded-xl shadow-sm">
+            <div className="flex items-center gap-4 group">
+              <div className="bg-white p-2.5 rounded-2xl shadow-sm border border-border group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" alt="State Emblem" className="h-12 w-auto" />
               </div>
               <div>
                 <p className={cn('font-black text-xl text-foreground tracking-tight', language === 'gu' ? 'font-gujarati' : '')}>{t('appName')}</p>
-                <p className={cn('text-sm font-semibold text-muted-foreground uppercase tracking-wider mt-1', language === 'gu' ? 'font-gujarati' : '')}>{t('govtOfGujarat')}</p>
+                <p className={cn('text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1', language === 'gu' ? 'font-gujarati' : '')}>{t('govtOfGujarat')}</p>
               </div>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-8 text-sm font-semibold text-muted-foreground">
-              <a href="#privacy" onClick={(e) => { e.preventDefault(); alert("Privacy Policy will be updated soon."); }} className="hover:text-primary transition-colors">Privacy Policy</a>
-              <a href="#terms" onClick={(e) => { e.preventDefault(); alert("Terms of Service will be updated soon."); }} className="hover:text-primary transition-colors">Terms of Service</a>
-              <a href="mailto:11a21278parth@gmail.com" className="hover:text-primary transition-colors">Contact Support</a>
-              <a href="/statistics" className="hover:text-primary transition-colors flex items-center gap-2 bg-primary/10 px-3 py-1 rounded-full text-primary hover:bg-primary/20">
-                <BarChart3 className="w-4 h-4" />Live Statistics
+            <div className="flex flex-wrap justify-center gap-6 text-sm font-semibold text-muted-foreground">
+              <Dialog>
+                <DialogTrigger className="hover:text-primary hover:bg-primary/5 px-4 py-2 rounded-full transition-all duration-300">
+                  Privacy Policy
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col rounded-3xl">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-black">Privacy Policy</DialogTitle>
+                    <DialogDescription>
+                      Last updated: May 2026. Government of Gujarat.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <ScrollArea className="flex-1 pr-4 mt-4 text-sm text-muted-foreground leading-relaxed">
+                    <div className="space-y-4">
+                      <p><strong>1. Information Collection:</strong> When you use the Aapno Rasto portal, we collect essential information such as your name, contact details, and GPS location only when you submit a complaint via the live camera feature.</p>
+                      <p><strong>2. Usage of Data:</strong> The data collected is strictly used for the resolution of civic issues. Your location data helps our engineers accurately pinpoint the problem area. Your contact information is used to provide status updates regarding your complaint.</p>
+                      <p><strong>3. Data Security:</strong> We employ state-of-the-art encryption and security protocols to ensure that your personal information is protected against unauthorized access, alteration, disclosure, or destruction.</p>
+                      <p><strong>4. Sharing of Information:</strong> Your data is solely accessible by authorized government personnel and assigned engineers. We do not sell or share your personal information with third parties for commercial purposes.</p>
+                      <p><strong>5. User Rights:</strong> You have the right to view the status of your complaints and update your profile information. Any misuse of the platform may result in account suspension.</p>
+                    </div>
+                  </ScrollArea>
+                </DialogContent>
+              </Dialog>
+
+              <Dialog>
+                <DialogTrigger className="hover:text-primary hover:bg-primary/5 px-4 py-2 rounded-full transition-all duration-300">
+                  Terms of Service
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col rounded-3xl">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-black">Terms of Service</DialogTitle>
+                    <DialogDescription>
+                      Please read these terms carefully before using the Aapno Rasto platform.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <ScrollArea className="flex-1 pr-4 mt-4 text-sm text-muted-foreground leading-relaxed">
+                    <div className="space-y-4">
+                      <p><strong>1. Acceptance of Terms:</strong> By accessing and using this platform, you accept and agree to be bound by the terms and provision of this agreement.</p>
+                      <p><strong>2. Use of Platform:</strong> The platform must be used solely for reporting genuine civic issues. Submitting false, abusive, or irrelevant complaints is strictly prohibited and will lead to immediate account termination.</p>
+                      <p><strong>3. Live Camera Requirement:</strong> To maintain authenticity, all complaint images must be captured using the platform's live camera feature. Uploads from the device gallery are restricted.</p>
+                      <p><strong>4. Reward System:</strong> Trust Points are awarded at the discretion of the verifying authorities upon successful resolution of a genuine complaint. Points have no cash value and can only be redeemed for specified government services or benefits.</p>
+                      <p><strong>5. Limitation of Liability:</strong> The Government of Gujarat is not liable for any direct, indirect, incidental, or consequential damages resulting from the use or inability to use the platform.</p>
+                    </div>
+                  </ScrollArea>
+                </DialogContent>
+              </Dialog>
+
+              <a href="mailto:11a21278parth@gmail.com" className="hover:text-primary hover:bg-primary/5 px-4 py-2 rounded-full transition-all duration-300">Contact Support</a>
+              
+              <a href="/statistics" className="flex items-center gap-2 bg-primary/10 px-5 py-2 rounded-full text-primary hover:bg-primary hover:text-white transition-all duration-300 group">
+                <BarChart3 className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                Live Statistics
               </a>
             </div>
 
-            <div className="flex items-center gap-2 font-bold text-muted-foreground bg-muted py-2 px-4 rounded-full transition-colors hover:bg-muted/80">
-              <Globe className="w-4 h-4" />
-              <a href="https://gujaratindia.gov.in" target="_blank" rel="noopener noreferrer" className="text-sm tracking-wide hover:text-primary transition-colors">
+            <div className="flex items-center gap-2 font-bold text-muted-foreground bg-muted/50 border border-border/50 py-2.5 px-5 rounded-full hover:bg-muted transition-colors">
+              <Globe className="w-4 h-4 text-primary" />
+              <a href="https://gujaratindia.gov.in" target="_blank" rel="noopener noreferrer" className="text-sm tracking-wide hover:text-foreground transition-colors">
                 © 2026 Government of Gujarat
               </a>
             </div>
