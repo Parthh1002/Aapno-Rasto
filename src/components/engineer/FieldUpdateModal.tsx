@@ -313,8 +313,8 @@ export function FieldUpdateModal({ workOrder, open, onOpenChange, onComplete }: 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
+      <DialogContent className="max-w-lg p-0">
+        <DialogHeader className="p-6 pb-2 border-b">
           <DialogTitle className="flex items-center gap-2">
             <MessageSquare className="w-5 h-5" />
             Field Update
@@ -324,7 +324,7 @@ export function FieldUpdateModal({ workOrder, open, onOpenChange, onComplete }: 
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-6 max-h-[70vh] overflow-y-auto p-6 pt-2">
           {/* Status Selection */}
           <div className="space-y-3">
             <Label>Status</Label>
