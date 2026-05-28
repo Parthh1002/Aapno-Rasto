@@ -51,10 +51,10 @@ const GALLERY: GalleryData[] = [
 
 /* ─── Animation variants (static — no re-creation) ─────────────────────── */
 const fadeUp = {
-  hidden: { opacity: 0, y: 32 },
+  hidden: { opacity: 0, y: 40 },
   visible: (i: number = 0) => ({
     opacity: 1, y: 0,
-    transition: { delay: i * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+    transition: { delay: i * 0.08, duration: 0.8, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
   }),
 };
 
@@ -64,15 +64,15 @@ const stagger = {
 };
 
 const scaleIn = {
-  hidden:  { opacity: 0, scale: 0.88, y: 20 },
-  visible: { opacity: 1, scale: 1,    y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
+  hidden:  { opacity: 0, scale: 0.85, y: 30 },
+  visible: { opacity: 1, scale: 1,    y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
 };
 
 /* ─── AnimatedCard — proper displayName for react/display-name ──────────── */
 const AnimatedCard = memo(({ children, className }: { children: ReactNode; className?: string }) => (
   <motion.div
     whileHover={{ y: -8, scale: 1.02 }}
-    transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+    transition={{ type: 'spring', stiffness: 300, damping: 20, mass: 0.8 }}
     className={className}
   >
     {children}
@@ -108,7 +108,7 @@ function StepItem({ item, index }: { item: StepData; index: number }) {
       ref={ref}
       initial={{ opacity: 0, x: -40 }}
       animate={inView ? { opacity: 1, x: 0 } : {}}
-      transition={{ delay: index * 0.08, duration: 0.55, type: 'spring', stiffness: 120 }}
+      transition={{ delay: index * 0.08, type: 'spring', stiffness: 100, damping: 20, mass: 0.8 }}
       className="flex items-center gap-6 md:gap-10 group"
     >
       <motion.div
@@ -142,7 +142,7 @@ function GalleryItem({ item, index }: { item: GalleryData; index: number }) {
       ref={ref}
       initial={{ opacity: 0, y: 40 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ delay: index * 0.12, duration: 0.6, type: 'spring' }}
+      transition={{ delay: index * 0.12, type: 'spring', stiffness: 100, damping: 20, mass: 0.8 }}
     >
       <Card className="overflow-hidden border-0 shadow-2xl rounded-[2rem] bg-card group relative gpu-layer">
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 z-10" />

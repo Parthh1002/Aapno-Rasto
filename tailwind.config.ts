@@ -13,6 +13,21 @@ export default {
       },
     },
     extend: {
+      fontSize: {
+        'xs': 'clamp(0.7rem, 0.65rem + 0.25vw, 0.75rem)',
+        'sm': 'clamp(0.8rem, 0.75rem + 0.25vw, 0.875rem)',
+        'base': 'clamp(0.95rem, 0.9rem + 0.25vw, 1rem)',
+        'lg': 'clamp(1.05rem, 1rem + 0.25vw, 1.125rem)',
+        'xl': 'clamp(1.15rem, 1.05rem + 0.5vw, 1.25rem)',
+        '2xl': 'clamp(1.3rem, 1.1rem + 1vw, 1.5rem)',
+        '3xl': 'clamp(1.6rem, 1.3rem + 1.5vw, 1.875rem)',
+        '4xl': 'clamp(1.9rem, 1.5rem + 2vw, 2.25rem)',
+        '5xl': 'clamp(2.5rem, 1.8rem + 3.5vw, 3rem)',
+        '6xl': 'clamp(3rem, 2.2rem + 4vw, 3.75rem)',
+        '7xl': 'clamp(3.5rem, 2.5rem + 5vw, 4.5rem)',
+        '8xl': 'clamp(4.5rem, 3rem + 7.5vw, 6rem)',
+        '9xl': 'clamp(6rem, 4.5rem + 10vw, 8rem)',
+      },
       fontFamily: {
         sans: ['Poppins', 'sans-serif'],
         gujarati: ['Noto Sans Gujarati', 'Poppins', 'sans-serif'],
