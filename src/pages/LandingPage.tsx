@@ -541,6 +541,36 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ═══════════════════════════ VIDEO DEMO ══════════════════════════════════ */}
+      <section className="py-24 px-4 bg-background relative" id="video-demo">
+        <div className="container mx-auto max-w-5xl text-center relative z-10">
+          <Reveal className="mb-12">
+            <span className="inline-flex items-center gap-2 text-red-500 font-bold text-sm uppercase tracking-widest bg-red-500/10 py-1.5 px-4 rounded-full">
+              See it in Action
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-foreground mt-6 mb-4 tracking-tight">How {t('appName')} Works</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-xl font-medium">
+              Watch our full demonstration video to see the platform end-to-end.
+            </p>
+          </Reveal>
+          
+          <Reveal delay={0.2}>
+            <div className="relative aspect-video w-full rounded-3xl overflow-hidden shadow-2xl border border-border group gpu-layer">
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <iframe 
+                className="w-full h-full relative z-10"
+                src="https://www.youtube.com/embed/vqTcp-bV1Og" 
+                title="Aapno Rasto Demo" 
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                referrerPolicy="strict-origin-when-cross-origin" 
+                allowFullScreen>
+              </iframe>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
       {/* ═══════════════════════════ CTA ══════════════════════════════════ */}
       <section className="py-24 px-4 bg-background relative overflow-hidden">
         <div className="container mx-auto max-w-5xl text-center relative z-10">
