@@ -28,6 +28,103 @@ By coupling hardware geolocation and native camera stream verification with real
 
 ---
 
+## 📐 System Architecture & Workflow Diagrams
+
+### 1. High-Level 3D/2D Layered System Architecture
+
+```mermaid
+graph TD
+    subgraph Presentation_Layer["📱 Layer 1: Client Interfaces & User Portals"]
+        CP["Citizen Portal (Mobile/Desktop Web)"]
+        EP["Field Engineer Portal (Mobile Web)"]
+        AP["Admin Command Center (Dashboard)"]
+    end
+
+    subgraph Client_Engines["⚡ Layer 2: Client Mechanics & Hardware Integration"]
+        WebGL["WebGL Liquid Physics Simulator (FluidCursor.tsx)"]
+        CamAPI["MediaDevices Camera Stream API (LiveCameraCapture.tsx)"]
+        GeoAPI["Device Geolocation API (GPS Pinpointing)"]
+        MapRender["Leaflet & Leaflet.heat Map Engine"]
+    end
+
+    subgraph Logic_Layer["🧠 Layer 3: Application Logic & Deduplication Engine"]
+        Haversine["Spatial Haversine Deduplication Engine (duplicateDetectionService.ts)"]
+        ReactQuery["TanStack React Query Cache & State"]
+        FormVal["Zod Schema & React Hook Form"]
+    end
+
+    subgraph Cloud_Backend["☁️ Layer 4: Real-Time Cloud Services & Database Tier"]
+        SupaDB[("Supabase PostgreSQL Database")]
+        SupaRT["Supabase Realtime WebSockets (Postgres CDC)"]
+        FbStore[("Firebase Cloud Storage (Photo Proofs)")]
+        FbAuth["Firebase & Supabase Auth Engine"]
+    end
+
+    CP --> GeoAPI
+    CP --> CamAPI
+    CP --> WebGL
+    CP --> FormVal
+
+    EP --> CamAPI
+    EP --> MapRender
+
+    AP --> MapRender
+
+    FormVal --> Haversine
+    Haversine --> SupaDB
+    CamAPI --> FbStore
+
+    SupaDB <--> SupaRT
+    SupaRT -->|Realtime Status Event| CP
+    SupaRT -->|New Work Order Push| EP
+    SupaRT -->|Live Heatmap Sync| AP
+```
+
+---
+
+### 2. End-to-End Civic Issue Lifecycle Workflow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Citizen as 👤 Citizen
+    participant ClientApp as 📱 App Client
+    participant DedupEngine as 📐 Haversine Dedup Engine
+    participant Supabase as ⚡ Supabase DB & Realtime
+    participant Firebase as 🖼️ Firebase Storage
+    actor Admin as 👨‍💼 Municipal Admin
+    actor Engineer as 👷 Field Engineer
+
+    Citizen->>ClientApp: Open Citizen Portal & Capture Photo (MediaDevices API)
+    ClientApp->>ClientApp: Fetch Exact GPS Coordinates (Geolocation API)
+    ClientApp->>DedupEngine: Run Spatial Check (Lat/Lng against Active Complaints)
+
+    alt Duplicate Complaint Detected (<50m Radius)
+        DedupEngine-->>ClientApp: Flag as Duplicate Complaint
+        ClientApp-->>Citizen: Link to Existing Complaint & Upvote Status
+    else Unique New Complaint
+        ClientApp->>Firebase: Upload Evidence Image
+        Firebase-->>ClientApp: Return Image Storage URL
+        ClientApp->>Supabase: Insert Complaint Record (Status: Pending)
+        Supabase-->>ClientApp: Complaint Registered Successfully
+        Supabase--)Admin: Real-time WebSocket Broadcast (New Complaint Pin)
+        Supabase--)Citizen: Real-time Timeline Initialized
+    end
+
+    Admin->>Supabase: Review Complaint & Assign Work Order to Area Zone
+    Supabase--)Engineer: Real-time Work Order Notification Pushed
+
+    Engineer->>ClientApp: Open Engineer Portal & Navigate to GPS Location
+    Engineer->>ClientApp: Complete Road Repair & Capture Mandatory "After" Photo
+    ClientApp->>Firebase: Upload Resolution Image
+    ClientApp->>Supabase: Update Status to "Completed" + Verification Proof
+
+    Supabase--)Citizen: Real-time Resolution Notification + Reward Points Credited!
+    Supabase--)Admin: Heatmap Updated (Issue Resolved)
+```
+
+---
+
 ## 📊 Platform Impact & Feature Matrix
 
 <table>
