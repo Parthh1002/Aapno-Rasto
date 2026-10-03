@@ -1,2 +1,17 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Force LF for shell scripts (needed for Linux GitHub Actions runner)
+*.sh text eol=lf
+android/gradlew text eol=lf
+android/gradlew.bat text eol=crlf
+
+# Binary files - never convert
+*.jar binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.apk binary
+*.aab binary
+*.keystore binary

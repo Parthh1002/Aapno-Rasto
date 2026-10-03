@@ -16,34 +16,68 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      # ── 1. Checkout ─────────────────────────────────────────────────────────
+      - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ── 2. Java 17 ──────────────────────────────────────────────────────────
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
+      # ── 3. Android SDK ──────────────────────────────────────────────────────
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Accept Android Licenses
-        run: yes | sdkmanager --licenses || true
+      - name: Install required SDK packages
+        run: |
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1
 
-      - name: Install Build Tools
-        run: sdkmanager "build-tools;34.0.0" "platforms;android-34" || true
+      # ── 4. Fix line endings on gradlew ──────────────────────────────────────
+      - name: Fix gradlew line endings and permissions
+        run: |
+          sed -i 's/\r$//' android/gradlew
+          chmod +x android/gradlew
 
-      - name: Make gradlew executable
-        run: chmod +x android/gradlew
+      # ── 5. Gradle cache ─────────────────────────────────────────────────────
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('android/**/*.gradle', 'android/gradle/wrapper/*.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
+      # ── 6. Build ─────────────────────────────────────────────────────────────
       - name: Build Debug APK
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon --stacktrace
+          ./gradlew assembleDebug \
+            --no-daemon \
+            --stacktrace \
+            -Pandroid.useAndroidX=true
         env:
           ANDROID_HOME: ${{ env.ANDROID_HOME }}
 
+      # ── 7. Verify APK exists ─────────────────────────────────────────────────
+      - name: Verify APK
+        run: |
+          APK_PATH="android/app/build/outputs/apk/debug/app-debug.apk"
+          if [ -f "$APK_PATH" ]; then
+            echo "✅ APK built successfully!"
+            ls -lh "$APK_PATH"
+          else
+            echo "❌ APK not found!"
+            find android/app/build -name "*.apk" 2>/dev/null || echo "No APKs found"
+            exit 1
+          fi
+
+      # ── 8. Upload as artifact ─────────────────────────────────────────────────
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -51,38 +85,46 @@ jobs:
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
 
-      - name: Delete Old Release Tag (if exists)
+      # ── 9. Delete old release tag if exists ──────────────────────────────────
+      - name: Clean up old release tag
         run: |
-          git tag -d v1.0.0 2>/dev/null || true
-          git push origin :refs/tags/v1.0.0 2>/dev/null || true
+          git push --delete origin v1.0.0 2>/dev/null || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create GitHub Release with APK
+      # ── 10. GitHub Release ────────────────────────────────────────────────────
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.0.0
-          name: "Aapno Rasto Android App v1.0.0"
+          name: "📱 Aapno Rasto Android App v1.0.0"
           body: |
-            ## 📱 Aapno Rasto Official Android App
+            ## 📱 Aapno Rasto - Official Android App
 
-            Download the APK below and install it on your Android phone.
+            > **Government of Gujarat** — Civic Road Complaint Management
 
-            ### 📋 How to Install:
-            1. Download `app-debug.apk` from below
-            2. On your Android phone, go to **Settings → Security → Unknown Sources** and enable it
-            3. Open the downloaded APK from your Downloads folder
-            4. Tap **Install** and you're done! ✅
+            ### ⬇️ Download & Install:
+            1. Tap **`app-debug.apk`** below to download
+            2. On your Android phone: **Settings → Security → Install Unknown Apps → Chrome → Allow**
+            3. Open the downloaded APK from your **Downloads** folder
+            4. Tap **Install** ✅
 
-            ### ✨ Features:
-            - 🗺️ GPS-based Road Complaint Reporting
-            - 📸 Direct Camera & Photo Upload
-            - 📲 Works Offline & on Low Bandwidth
-            - 🔔 Real-time Status Notifications
-            - 🏆 Reward Points System
+            ### ✨ App Features:
+            | Feature | Details |
+            |---------|---------|
+            | 📍 GPS Location | Auto-detects complaint location |
+            | 📸 Camera Upload | Direct photo capture & upload |
+            | 📶 Offline Support | Works on low/no internet |
+            | 🔔 Notifications | Real-time status updates |
+            | 🏆 Rewards | Earn points for reporting |
+            | 🔄 Swipe Refresh | Pull down to refresh |
+
+            ### 📋 Requirements:
+            - Android **7.0+** (API 24+)
+            - Internet connection for first load
 
             ---
-            *Government of Gujarat - Aapno Rasto Civic Portal*
+            *Built with ❤️ by Team N+1 | LDRP Institute of Technology*
           files: android/app/build/outputs/apk/debug/app-debug.apk
           draft: false
           prerelease: false
