@@ -1,4 +1,4 @@
-const CACHE_NAME = 'aapno-rasto-v2';
+const CACHE_NAME = 'aapno-rasto-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',

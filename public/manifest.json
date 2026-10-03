@@ -10,6 +10,7 @@
   "background_color": "#002147",
   "theme_color": "#002147",
   "orientation": "portrait-primary",
+  "prefer_related_applications": false,
   "lang": "en",
   "dir": "ltr",
   "icons": [
