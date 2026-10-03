@@ -1,0 +1,9 @@
+<resources>
+    <style name="Theme.AapnoRasto" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#002147</item>
+        <item name="colorPrimaryVariant">#001a38</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="android:statusBarColor">#002147</item>
+        <item name="android:navigationBarColor">#002147</item>
+    </style>
+</resources>

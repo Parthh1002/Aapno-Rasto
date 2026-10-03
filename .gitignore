@@ -45,3 +45,15 @@ backend/venv/
 backend/env/
 backend/__pycache__/
 *.egg-info/
+
+# Android & Gradle
+.gradle/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/captures/
+android/.externalNativeBuild/
+android/.cxx/
+*.apk
+*.aab
