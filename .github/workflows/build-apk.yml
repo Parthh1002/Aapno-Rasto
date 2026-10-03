@@ -25,39 +25,68 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: '8.2'
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
       - name: Accept Android Licenses
-        run: |
-          yes | sdkmanager --licenses || true
+        run: yes | sdkmanager --licenses || true
+
+      - name: Install Build Tools
+        run: sdkmanager "build-tools;34.0.0" "platforms;android-34" || true
+
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
 
       - name: Build Debug APK
         run: |
           cd android
-          gradle assembleDebug --stacktrace --no-daemon
+          ./gradlew assembleDebug --no-daemon --stacktrace
+        env:
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Aapno-Rasto-v1.0.0-APK
+          name: aapno-rasto-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
 
-      - name: Create or Update GitHub Release with APK
-        uses: softprops/action-gh-release@v1
-        if: github.ref == 'refs/heads/main'
-        with:
-          tag_name: v1.0.0-apk
-          name: Aapno Rasto Android App v1.0.0
-          body: |
-            ## 📱 Aapno Rasto Official Android APK
-            Official Android Application for Aapno Rasto - Civic Complaint Management Platform.
-            - Direct Road Complaint Registration
-            - Live GPS & Camera Capture
-            - Offline & Low-bandwidth Support
-          files: android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Delete Old Release Tag (if exists)
+        run: |
+          git tag -d v1.0.0 2>/dev/null || true
+          git push origin :refs/tags/v1.0.0 2>/dev/null || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
+
+      - name: Create GitHub Release with APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0
+          name: "Aapno Rasto Android App v1.0.0"
+          body: |
+            ## 📱 Aapno Rasto Official Android App
+
+            Download the APK below and install it on your Android phone.
+
+            ### 📋 How to Install:
+            1. Download `app-debug.apk` from below
+            2. On your Android phone, go to **Settings → Security → Unknown Sources** and enable it
+            3. Open the downloaded APK from your Downloads folder
+            4. Tap **Install** and you're done! ✅
+
+            ### ✨ Features:
+            - 🗺️ GPS-based Road Complaint Reporting
+            - 📸 Direct Camera & Photo Upload
+            - 📲 Works Offline & on Low Bandwidth
+            - 🔔 Real-time Status Notifications
+            - 🏆 Reward Points System
+
+            ---
+            *Government of Gujarat - Aapno Rasto Civic Portal*
+          files: android/app/build/outputs/apk/debug/app-debug.apk
+          draft: false
+          prerelease: false
+          make_latest: true
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

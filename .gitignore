@@ -55,5 +55,7 @@ android/local.properties
 android/captures/
 android/.externalNativeBuild/
 android/.cxx/
+# Ignore built APKs/AABs but NOT wrapper jar
 *.apk
 *.aab
+!android/gradle/wrapper/gradle-wrapper.jar
