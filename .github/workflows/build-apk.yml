@@ -27,57 +27,71 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # ── 3. Android SDK ──────────────────────────────────────────────────────
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install required SDK packages
+      # ── 3. Android SDK (manual install — no broken actions) ─────────────────
+      - name: Install Android SDK Command Line Tools
         run: |
-          yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1
+          # Download cmdline-tools
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          cd $HOME/android-sdk/cmdline-tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
+          unzip -q cmdline-tools.zip
+          mv cmdline-tools latest
+          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
 
-      # ── 4. Fix line endings on gradlew ──────────────────────────────────────
-      - name: Fix gradlew line endings and permissions
+      - name: Accept Licenses and Install SDK Packages
+        run: |
+          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses --sdk_root=$HOME/android-sdk > /dev/null 2>&1 || true
+          $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk \
+            "platforms;android-34" \
+            "build-tools;34.0.0" \
+            "platform-tools"
+
+      # ── 4. local.properties for gradle ──────────────────────────────────────
+      - name: Create local.properties
+        run: echo "sdk.dir=$HOME/android-sdk" > android/local.properties
+
+      # ── 5. Fix gradlew line endings and permissions ──────────────────────────
+      - name: Fix gradlew permissions
         run: |
           sed -i 's/\r$//' android/gradlew
           chmod +x android/gradlew
 
-      # ── 5. Gradle cache ─────────────────────────────────────────────────────
-      - name: Cache Gradle packages
+      # ── 6. Gradle cache ─────────────────────────────────────────────────────
+      - name: Cache Gradle
         uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('android/**/*.gradle', 'android/gradle/wrapper/*.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          restore-keys: ${{ runner.os }}-gradle-
 
-      # ── 6. Build ─────────────────────────────────────────────────────────────
+      # ── 7. Build ─────────────────────────────────────────────────────────────
       - name: Build Debug APK
         run: |
           cd android
-          ./gradlew assembleDebug \
-            --no-daemon \
-            --stacktrace \
-            -Pandroid.useAndroidX=true
+          ./gradlew assembleDebug --no-daemon --stacktrace
         env:
           ANDROID_HOME: ${{ env.ANDROID_HOME }}
+          ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
 
-      # ── 7. Verify APK exists ─────────────────────────────────────────────────
-      - name: Verify APK
+      # ── 8. Verify ────────────────────────────────────────────────────────────
+      - name: Verify APK exists
         run: |
-          APK_PATH="android/app/build/outputs/apk/debug/app-debug.apk"
-          if [ -f "$APK_PATH" ]; then
+          APK="android/app/build/outputs/apk/debug/app-debug.apk"
+          if [ -f "$APK" ]; then
             echo "✅ APK built successfully!"
-            ls -lh "$APK_PATH"
+            ls -lh "$APK"
           else
-            echo "❌ APK not found!"
+            echo "❌ APK not found. Listing build dir:"
             find android/app/build -name "*.apk" 2>/dev/null || echo "No APKs found"
             exit 1
           fi
 
-      # ── 8. Upload as artifact ─────────────────────────────────────────────────
+      # ── 9. Upload artifact ───────────────────────────────────────────────────
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -85,46 +99,37 @@ jobs:
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
 
-      # ── 9. Delete old release tag if exists ──────────────────────────────────
-      - name: Clean up old release tag
+      # ── 10. Clean up old tag if any ──────────────────────────────────────────
+      - name: Delete old release tag
         run: |
           git push --delete origin v1.0.0 2>/dev/null || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # ── 10. GitHub Release ────────────────────────────────────────────────────
+      # ── 11. GitHub Release ───────────────────────────────────────────────────
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.0.0
           name: "📱 Aapno Rasto Android App v1.0.0"
           body: |
-            ## 📱 Aapno Rasto - Official Android App
+            ## 📱 Aapno Rasto — Official Android App
+            > Government of Gujarat · Civic Road Complaint Portal
 
-            > **Government of Gujarat** — Civic Road Complaint Management
+            ### ⬇️ How to Install:
+            1. Download **`app-debug.apk`** below
+            2. Android: **Settings → Security → Unknown Sources → Allow**
+            3. Open APK from Downloads → tap **Install** ✅
 
-            ### ⬇️ Download & Install:
-            1. Tap **`app-debug.apk`** below to download
-            2. On your Android phone: **Settings → Security → Install Unknown Apps → Chrome → Allow**
-            3. Open the downloaded APK from your **Downloads** folder
-            4. Tap **Install** ✅
+            ### ✨ Features:
+            - 📍 GPS auto-location for complaints
+            - 📸 Direct camera & gallery upload
+            - 📶 Offline-ready with caching
+            - 🔔 Real-time status notifications
+            - 🏆 Reward points system
+            - 🔄 Pull-to-refresh
 
-            ### ✨ App Features:
-            | Feature | Details |
-            |---------|---------|
-            | 📍 GPS Location | Auto-detects complaint location |
-            | 📸 Camera Upload | Direct photo capture & upload |
-            | 📶 Offline Support | Works on low/no internet |
-            | 🔔 Notifications | Real-time status updates |
-            | 🏆 Rewards | Earn points for reporting |
-            | 🔄 Swipe Refresh | Pull down to refresh |
-
-            ### 📋 Requirements:
-            - Android **7.0+** (API 24+)
-            - Internet connection for first load
-
-            ---
-            *Built with ❤️ by Team N+1 | LDRP Institute of Technology*
+            > Android 7.0+ required
           files: android/app/build/outputs/apk/debug/app-debug.apk
           draft: false
           prerelease: false
