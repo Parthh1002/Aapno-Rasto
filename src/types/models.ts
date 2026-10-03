@@ -75,7 +75,7 @@ export interface WorkOrder {
   actual_completion_date: string | null;
   sla_deadline: string | null;
   sla_breached: boolean;
-  status: 'draft' | 'pending_approval' | 'approved' | 'in_progress' | 'blocked' | 'completed' | 'cancelled';
+  status: 'draft' | 'pending_approval' | 'approved' | 'in_progress' | 'blocked' | 'completed' | 'cancelled' | 'pending_verification';
   created_at: string;
   updated_at: string;
   complaint?: Complaint; // populated via join

@@ -5,6 +5,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Complaint } from '@/types/models';
 import { uploadToStorage } from '@/lib/storage';
 
+// Re-export Complaint so other files can import it from '@/hooks/useComplaints'
+export type { Complaint };
+
+
 export interface CreateComplaintData {
   category: string;
   sub_category?: string;

@@ -34,7 +34,7 @@ export function DuplicatesManager({ complaints, onMerge, onReject, onViewComplai
     const groups: Complaint[][] = [];
     const processedIds = new Set<string>();
 
-    const activeComplaints = complaints.filter(c => c.status !== 'completed' && c.status !== 'rejected');
+    const activeComplaints = complaints.filter(c => (c.status as string) !== 'completed' && (c.status as string) !== 'rejected');
 
     activeComplaints.forEach((c1) => {
       if (processedIds.has(c1.id)) return;

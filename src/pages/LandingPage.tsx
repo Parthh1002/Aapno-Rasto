@@ -16,6 +16,7 @@ import { cn } from '@/lib/utils';
 import campusImg1 from '@/assets/ldrp-campus-1.jpg';
 import campusImg2 from '@/assets/ldrp-campus-2.jpg';
 import campusImg3 from '@/assets/ldrp-campus-3.jpg';
+import { AppDownloadBanner } from '@/components/AppDownloadBanner';
 
 /* ─── Types ─────────────────────────────────────────────────────────────── */
 interface StepData { step: number; title: string; description: string; icon: FC<{ className?: string }> }
@@ -690,6 +691,7 @@ export default function LandingPage() {
         </div>
       </footer>
       </div>
+      <AppDownloadBanner />
     </>
   );
 }

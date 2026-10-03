@@ -21,9 +21,27 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?node_modules
+*.sw?
+
+# Environment & Secrets
 .env
-dist
-build
-__pycache__
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Python virtual environment & cache
+__pycache__/
+*.py[cod]
+*$py.class
 *.pyc
+.venv/
+venv/
+env/
+ENV/
+backend/.venv/
+backend/venv/
+backend/env/
+backend/__pycache__/
+*.egg-info/

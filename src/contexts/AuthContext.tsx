@@ -32,6 +32,8 @@ interface AuthUser {
   email: string;
   role: UserRole;
   isVerified: boolean;
+  name?: string;
+  phone?: string;
 }
 
 interface AuthContextType {

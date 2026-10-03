@@ -250,10 +250,19 @@ export function useUpdateWorkOrder() {
   });
 }
 
+interface SafetyChecklistTemplate {
+  id: string;
+  category: string;
+  sub_category?: string | null;
+  items: { item: string; required: boolean }[];
+  is_active?: boolean;
+  [key: string]: unknown;
+}
+
 export function useSafetyChecklistTemplate(category: string, subCategory?: string | null) {
   return useQuery({
     queryKey: ['safety-template', category, subCategory],
-    queryFn: async () => {
+    queryFn: async (): Promise<SafetyChecklistTemplate | null> => {
       if (!db) return null;
       let q = query(
         collection(db, 'safety_checklist_templates'),
@@ -269,7 +278,7 @@ export function useSafetyChecklistTemplate(category: string, subCategory?: strin
       
       const snapshot = await getDocs(q);
       if (snapshot.empty) return null;
-      return { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
+      return { id: snapshot.docs[0].id, ...snapshot.docs[0].data() } as SafetyChecklistTemplate;
     },
     enabled: !!category,
   });
